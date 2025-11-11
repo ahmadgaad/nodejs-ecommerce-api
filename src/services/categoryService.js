@@ -27,32 +27,21 @@ exports.getCategories = async (req, res) => {
 /// @route   GET /api/v1/categories/:id
 /// @access  Public
 exports.getCategoryById = async (req, res) => {
-  try {
-    const categoryId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid category ID format",
-      });
-    }
-    const category = await categoryModel.findById(categoryId);
+  const categoryId = req.params.id;
+  const category = await categoryModel.findById(categoryId);
 
-    if (!category) {
-      return res.status(404).json({
-        success: false,
-        message: "Category not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Category fetched successfully",
-      category,
+  if (!category) {
+    return res.status(404).json({
+      success: false,
+      message: "Category not found",
     });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server Error" });
   }
+
+  return res.status(200).json({
+    success: true,
+    message: "Category fetched successfully",
+    category,
+  });
 };
 
 /// @desc    Create a new category
@@ -61,6 +50,7 @@ exports.getCategoryById = async (req, res) => {
 exports.createCategory = async (req, res) => {
   try {
     const name = req.body.name;
+    const description = req.body.description;
     if (!name) {
       return res.status(400).json({ message: "Name is required" });
     }
@@ -73,10 +63,13 @@ exports.createCategory = async (req, res) => {
       });
     }
 
-    const category = await categoryModel.create({
-      name,
-      slug: slugify(name, { lower: true }),
-    });
+    const category = await categoryModel.create(
+      {
+        name,
+        slug: slugify(name, { lower: true }),
+      },
+      description
+    );
 
     return res.status(201).json({
       success: true,
