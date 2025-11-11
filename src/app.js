@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 
+const categoryRoutes = require("./routes/categoryRoute.js");
+
 const app = express();
 
 // Body parser middleware
@@ -11,9 +13,6 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-// Sample route
-app.get("/", (req, res) => {
-  res.send("Hello World after adding nodemon!");
-});
+app.use("/api/v1", categoryRoutes);
 
 module.exports = app;
