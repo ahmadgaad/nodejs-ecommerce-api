@@ -26,6 +26,14 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Category = mongoose.model("Category", categorySchema);
+// // 🔗 Virtual relation: Category._id -> SubCategory.category
+// categorySchema.virtual("subcategories", {
+//   ref: "SubCategory",
+//   localField: "_id",
+//   foreignField: "category",
+//   justOne: false,
+// });
 
-module.exports = Category;
+const CategoryModel = mongoose.model("Category", categorySchema);
+
+module.exports = CategoryModel;

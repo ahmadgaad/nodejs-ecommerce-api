@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const ApiError = require("./utils/apiError");
 const globalErrorHandler = require("./middlewares/errorMiddleware");
 const categoryRoutes = require("./routes/categoryRoute.js");
+const subCategoryRoutes = require("./routes/subCategoryRoute.js")
 
 const app = express();
 
@@ -15,6 +16,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api/v1", categoryRoutes);
+app.use("/api/v1", subCategoryRoutes);
 
 // Global error handler for unhandled routes
 app.use((req, res, next) => {
@@ -22,6 +24,6 @@ app.use((req, res, next) => {
 });
 
 // Error handling middleware for all errors
-app.use(globalErrorHandler);
+// app.use(globalErrorHandler);
 
 module.exports = app;

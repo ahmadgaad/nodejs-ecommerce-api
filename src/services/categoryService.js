@@ -1,6 +1,5 @@
 const slugify = require("slugify");
 const categoryModel = require("../models/CategoryModel.js");
-const mongoose = require("mongoose");
 
 /// @desc    Get all categories
 /// @route   GET /api/v1/categories
@@ -11,6 +10,8 @@ exports.getCategories = async (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 5;
     const skip = (page - 1) * limit;
     const categories = await categoryModel.find().skip(skip).limit(limit);
+    // .populate({ path: "subcategories", select: "name slug -_id -category" }) // select only what you need;
+    // .lean();
     return res.status(200).json({
       success: true,
       message: "Categories fetched successfully",
@@ -121,12 +122,6 @@ exports.updateCategory = async (req, res) => {
 exports.deleteCategoryById = async (req, res) => {
   try {
     const categoryId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid category ID format",
-      });
-    }
     const category = await categoryModel.findOneAndDelete({ _id: categoryId });
     if (!category) {
       return res.status(404).json({
